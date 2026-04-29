@@ -1,2 +1,2 @@
 # bms
-prototype
+prototype for a app
