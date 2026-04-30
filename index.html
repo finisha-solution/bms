@@ -3,106 +3,506 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Prime Cut – App Concept Prototype</title>
+  <title>Prime Cut – Timber & Furniture Management</title>
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family: 'Roboto', 'Segoe UI', system-ui, sans-serif; }
-    body { background:#e0e0e0; display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
-    .container { display:flex; flex-direction:column; align-items:center; gap:16px; max-width:400px; }
-    .phone { width:375px; height:670px; background:#fff; border-radius:40px; box-shadow:0 20px 60px rgba(0,0,0,0.3); overflow:hidden; display:flex; flex-direction:column; }
-    .status-bar { height:44px; background:#0D47A1; color:white; display:flex; justify-content:space-between; align-items:center; padding:0 20px; font-size:12px; font-weight:500; }
-    .screen { flex:1; overflow-y:auto; background:#F5F5F5; display:none; padding-bottom:20px; }
-    .screen.active { display:block; }
-    .header { background:#1976D2; color:white; padding:12px 16px; display:flex; align-items:center; font-weight:500; }
-    .card { background:white; border-radius:12px; padding:16px; margin:12px 16px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
-    .kpi-row { display:flex; gap:12px; margin:12px 16px; }
-    .kpi { flex:1; background:white; border-radius:12px; padding:12px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
-    .kpi .value { font-size:20px; font-weight:bold; color:#212121; }
-    .kpi .label { font-size:11px; color:#757575; margin-top:4px; }
-    .btn { display:block; width:100%; padding:14px; border-radius:10px; font-weight:600; font-size:15px; text-align:center; margin:8px 0; }
-    .btn-primary { background:#1976D2; color:white; }
-    .btn-outline { background:white; color:#1976D2; border:1.5px solid #1976D2; }
-    .btn-disabled { background:#E0E0E0; color:#757575; }
-    .input-group { margin:12px 0; }
-    .input-group label { display:block; font-size:12px; color:#757575; margin-bottom:4px; }
-    .input-group .fake-input { width:100%; padding:12px; border:1px solid #E0E0E0; border-radius:8px; font-size:14px; background:#FAFAFA; color:#888; }
-    .list-item { padding:12px 0; border-bottom:1px solid #E0E0E0; display:flex; justify-content:space-between; align-items:center; }
-    .divider { border-top:1px solid #E0E0E0; margin:12px 0; }
-    .badge { background:#FF9800; color:white; padding:2px 8px; border-radius:10px; font-size:11px; margin-left:8px; }
-    .green { color:#4CAF50; }
-    .red { color:#F44336; }
-    .nav-arrows { display:flex; justify-content:space-between; width:100%; }
-    .nav-btn { background:white; border:1px solid #E0E0E0; padding:10px 20px; border-radius:20px; font-size:16px; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); }
-    .screen-counter { font-size:14px; color:#757575; margin-top:4px; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background: #e0e0e0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .phone {
+      width: 375px;
+      height: 812px;
+      background: #ffffff;
+      border-radius: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .status-bar {
+      height: 44px;
+      background: #0D47A1;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .screen {
+      flex: 1;
+      overflow-y: auto;
+      display: none;
+      background: #F5F5F5;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .header {
+      background: #1976D2;
+      color: white;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .header .back {
+      font-size: 20px;
+      cursor: pointer;
+      width: 32px;
+      text-align: center;
+    }
+
+    .header .title {
+      flex: 1;
+      font-size: 17px;
+    }
+
+    .header .icon-right {
+      font-size: 20px;
+      margin-left: 8px;
+      cursor: pointer;
+    }
+
+    .tabs {
+      height: 56px;
+      background: white;
+      display: flex;
+      border-top: 1px solid #E0E0E0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      box-shadow: 0 -2px 4px rgba(0,0,0,0.05);
+    }
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab {
+      min-width: 64px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #757575;
+      font-size: 10px;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+
+    .tab.active {
+      color: #1976D2;
+    }
+
+    .tab span.icon {
+      font-size: 20px;
+      margin-bottom: 2px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 12px 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .kpi-row {
+      display: flex;
+      gap: 12px;
+      margin: 12px 16px;
+    }
+
+    .kpi {
+      flex: 1;
+      background: white;
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .kpi .value {
+      font-size: 22px;
+      font-weight: bold;
+      color: #212121;
+    }
+
+    .kpi .label {
+      font-size: 11px;
+      color: #757575;
+      margin-top: 4px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      text-align: center;
+      border: none;
+      cursor: pointer;
+      margin: 8px 0;
+    }
+
+    .btn-primary {
+      background: #1976D2;
+      color: white;
+      box-shadow: 0 2px 6px rgba(25, 118, 210, 0.4);
+    }
+
+    .btn-outline {
+      background: white;
+      color: #1976D2;
+      border: 1.5px solid #1976D2;
+    }
+
+    .btn-small {
+      width: auto;
+      display: inline-block;
+      padding: 8px 16px;
+      font-size: 13px;
+      margin: 4px;
+    }
+
+    .input-group {
+      margin: 12px 0;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 12px;
+      color: #757575;
+      margin-bottom: 4px;
+    }
+
+    .input-group input,
+    .input-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #E0E0E0;
+      border-radius: 8px;
+      font-size: 14px;
+      background: white;
+    }
+
+    .divider {
+      border-top: 1px solid #E0E0E0;
+      margin: 12px 0;
+    }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+    }
+
+    .cart-item .name {
+      flex: 2;
+      font-weight: 500;
+    }
+
+    .qty-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .qty-control button {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid #E0E0E0;
+      background: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .offline-banner {
+      background: #FF9800;
+      color: white;
+      text-align: center;
+      padding: 6px;
+      font-size: 12px;
+      display: none;
+    }
+
+    .role-select {
+      display: flex;
+      gap: 12px;
+      margin: 16px;
+    }
+
+    .role-card {
+      flex: 1;
+      padding: 20px;
+      text-align: center;
+      border-radius: 12px;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: 0.2s;
+    }
+
+    .role-card:hover,
+    .role-card.selected {
+      border-color: #1976D2;
+      background: #E3F2FD;
+    }
+
+    .chart-placeholder {
+      background: #E3F2FD;
+      height: 120px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1976D2;
+      font-weight: 500;
+      margin: 12px 0;
+    }
+
+    .list-item {
+      padding: 12px 0;
+      border-bottom: 1px solid #E0E0E0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chip {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      background: #E0E0E0;
+      cursor: pointer;
+      margin: 0 4px;
+    }
+
+    .chip.active {
+      background: #1976D2;
+      color: white;
+    }
+
+    .scrolling {
+      padding-bottom: 20px;
+    }
   </style>
 </head>
 <body>
-<div class="container">
-  <div class="phone" id="app">
-    <div class="status-bar"><span>0:00</span><span>📶 🔋 100%</span></div>
+<div class="phone" id="app">
+  <div class="status-bar">
+    <span>0:00</span>
+    <span>📶 🔋 100%</span>
+  </div>
 
-    <!-- Screen 1: Login -->
-    <div class="screen active" id="screen1">
-      <div style="display:flex; flex-direction:column; align-items:center; padding:60px 24px;">
-        <div style="font-size:40px; margin-bottom:8px;">PRIME CUT</div>
-        <div style="font-size:18px; font-weight:bold; color:#212121; margin-bottom:24px;">Timber & Furniture</div>
-        <div class="input-group" style="width:100%"><label>Email address</label><div class="fake-input">admin@primecut.com</div></div>
-        <div class="input-group" style="width:100%"><label>Password</label><div class="fake-input">••••••••</div></div>
-        <div style="width:100%; margin:12px 0;"><div class="btn btn-primary">Sign In (disabled)</div></div>
-        <div style="margin-top:16px; color:#1976D2; font-size:13px">Forgot Password?</div>
+  <!-- ========== LOGIN SCREEN ========== -->
+  <div class="screen active" id="loginScreen">
+    <div style="display: flex; flex-direction: column; align-items: center; padding: 60px 24px;">
+      <div style="font-size: 40px; margin-bottom: 8px;">PRIME CUT</div>
+      <div style="font-size: 20px; font-weight: bold; color: #212121; text-align: center;">Timber & Furniture</div>
+      <div style="color: #757575; margin-bottom: 32px;">Management System</div>
+
+      <div class="input-group" style="width:100%">
+        <label>Email address</label>
+        <input type="email" placeholder="user@example.com" value="admin@primecut.com" id="loginEmail">
       </div>
-    </div>
+      <div class="input-group" style="width:100%">
+        <label>Password</label>
+        <input type="password" placeholder="••••••••" value="password">
+      </div>
 
-    <!-- Screen 2: Salesperson Dashboard (now shows pending alert) -->
-    <div class="screen" id="screen2">
-      <div class="header"><span>Dashboard</span></div>
+      <div class="role-select" style="width:100%">
+        <div class="role-card selected" onclick="selectRole('salesperson', this)" id="roleSalesperson">
+          <span style="font-size:24px">👨‍💼</span><br>Salesperson
+        </div>
+        <div class="role-card" onclick="selectRole('admin', this)" id="roleAdmin">
+          <span style="font-size:24px">👩‍💼</span><br>Admin
+        </div>
+      </div>
+
+      <button class="btn btn-primary" style="margin-top:16px" onclick="login()">Sign In</button>
+      <div style="margin-top:20px; color:#1976D2; font-size:13px">Forgot Password?</div>
+    </div>
+  </div>
+
+  <!-- ========== SALESPERSON DASHBOARD ========== -->
+  <div class="screen" id="salespersonDashboardScreen">
+    <div class="header">
+      <span class="back" onclick="logout()">←</span>
+      <span class="title">Dashboard</span>
+      <span class="icon-right">🔔</span>
+    </div>
+    <div class="offline-banner" style="display:none" id="offlineBanner">Offline Mode - Sales will sync later</div>
+    <div class="scrolling">
       <div class="kpi-row">
         <div class="kpi"><div class="value">KES 45,000</div><div class="label">Today's Total</div></div>
         <div class="kpi"><div class="value">12</div><div class="label">My Sales Today</div></div>
       </div>
+
       <div class="card">
-        <div style="font-weight:bold; margin-bottom:8px">Quick Actions</div>
-        <div class="btn btn-primary">🛒 New Sale</div>
-        <div class="btn btn-outline">📋 My Orders</div>
-        <div class="btn btn-outline">🧾 Receipts</div>
+        <div style="font-weight:bold; margin-bottom:12px">⚡ Quick Actions</div>
+        <button class="btn btn-primary" onclick="navigateTo('newSaleScreen')">🛒 New Sale</button>
+        <button class="btn btn-outline">📋 My Orders</button>
+        <button class="btn btn-outline">🧾 Receipts</button>
       </div>
+
       <div class="card">
         <div style="font-weight:bold; margin-bottom:8px">📈 My Performance</div>
-        <div>This week: KES 180,000 / 250,000 (72%)</div>
-        <div style="background:#E0E0E0; height:8px; border-radius:4px; margin-top:8px"><div style="width:72%; background:#1976D2; height:8px; border-radius:4px"></div></div>
+        <div>This week: KES 180,000</div>
+        <div>Target: KES 250,000 (72%)</div>
+        <div style="background:#E0E0E0; height:8px; border-radius:4px; margin-top:8px">
+          <div style="width:72%; background:#1976D2; height:8px; border-radius:4px"></div>
+        </div>
       </div>
+
       <div class="card">
-        <div style="font-weight:bold; margin-bottom:8px">⚠️ Pending Approval</div>
-        <div class="list-item"><span>🛋️ Sofa Set (15% discount)</span><span class="badge">1</span></div>
+        <div style="font-weight:bold; margin-bottom:8px">Recent Sales</div>
+        <div class="list-item">#S0012 <span>KES 12,000</span></div>
+        <div class="list-item">#S0016 <span>KES 18,000</span></div>
       </div>
     </div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchSalespersonTab('dashboard')"><span class="icon">🏠</span>Home</div>
+      <div class="tab" onclick="switchSalespersonTab('sales')"><span class="icon">🛒</span>Sales</div>
+      <div class="tab" onclick="logout()"><span class="icon">👤</span>Profile</div>
+    </div>
+  </div>
 
-    <!-- Screen 3: New Sale with 15% discount (submitted for approval) -->
-    <div class="screen" id="screen3">
-      <div class="header"><span>New Sale</span></div>
+  <!-- ========== NEW SALE SCREEN ========== -->
+  <div class="screen" id="newSaleScreen">
+    <div class="header">
+      <span class="back" onclick="navigateTo('salespersonDashboardScreen')">←</span>
+      <span class="title">New Sale</span>
+      <span class="icon-right" onclick="alert('Scanner would open here')">📷</span>
+    </div>
+    <div class="scrolling" style="padding-bottom:80px">
       <div class="card">
         <div style="font-weight:bold; margin-bottom:12px">Customer</div>
-        <div class="input-group"><label>Customer Name</label><div class="fake-input">Jane M.</div></div>
-        <div class="input-group"><label>Phone</label><div class="fake-input">+254722000000</div></div>
+        <div class="input-group"><label>Customer Name *</label><input type="text" value="John Doe" id="custName"></div>
+        <div class="input-group"><label>Phone Number</label><input type="text" value="+254712345678"></div>
       </div>
+
       <div class="card">
-        <div style="font-weight:bold; margin-bottom:8px">Cart (1)</div>
-        <div class="list-item"><span>🛋️ Sofa Set (1)</span><span>45,000</span></div>
-        <div style="margin-top:12px; display:flex; justify-content:space-between"><span>Subtotal</span><span>KES 45,000</span></div>
-        <div style="display:flex; justify-content:space-between; color:#F44336; font-weight:500"><span>Discount (15%)</span><span>-6,750</span></div>
-        <div style="font-weight:bold; display:flex; justify-content:space-between"><span>Total</span><span>KES 38,250</span></div>
-        <div class="input-group" style="margin-top:12px"><label>Payment Method</label><div class="fake-input">M-Pesa</div></div>
-        <div class="btn btn-disabled" style="margin-top:16px">Submitted for Approval</div>
-        <div style="font-size:12px; color:#757575; text-align:center; margin-top:4px;">Discount above 10% requires manager approval</div>
+        <div style="display:flex; justify-content:space-between; align-items:center">
+          <span style="font-weight:bold">Cart (2)</span>
+          <button class="btn btn-outline btn-small" onclick="addItem()">+ Add Item</button>
+        </div>
+        <div class="cart-item">
+          <span class="name">🪑 Office Table</span>
+          <div class="qty-control">
+            <button onclick="updateQty(this, -1, 12000)">-</button>
+            <span class="qty">1</span>
+            <button onclick="updateQty(this, 1, 12000)">+</button>
+          </div>
+          <span class="line-total" style="margin-left:8px">12,000</span>
+          <span style="color:red; cursor:pointer" onclick="this.parentElement.remove();updateTotals();">🗑️</span>
+        </div>
+        <div class="cart-item">
+          <span class="name">🛏️ Bed 6x6</span>
+          <div class="qty-control">
+            <button onclick="updateQty(this, -1, 25000)">-</button>
+            <span class="qty">1</span>
+            <button onclick="updateQty(this, 1, 25000)">+</button>
+          </div>
+          <span class="line-total" style="margin-left:8px">25,000</span>
+          <span style="color:red; cursor:pointer" onclick="this.parentElement.remove();updateTotals();">🗑️</span>
+        </div>
+        <div class="divider"></div>
+        <div style="display:flex; justify-content:space-between"><span>Subtotal</span><span id="subtotal">KES 37,000</span></div>
+        <div style="display:flex; justify-content:space-between; margin-top:8px">
+          <span>Discount (5%)</span>
+          <span id="discountValue" style="color:#4CAF50">-KES 1,850</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-weight:bold; margin-top:8px">
+          <span>Total</span><span id="total">KES 35,150</span>
+        </div>
+
+        <div class="input-group" style="margin-top:12px">
+          <label>Payment Method</label>
+          <select>
+            <option>Cash</option>
+            <option selected>M-Pesa</option>
+            <option>Bank Transfer</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>M-Pesa Transaction Code</label>
+          <input type="text" placeholder="Enter code from customer" value="QWERTY123" id="mpesaRef">
+        </div>
+      </div>
+      <button class="btn btn-primary" style="margin:0 16px" onclick="completeSale()">Complete Sale</button>
+    </div>
+  </div>
+
+  <!-- ========== RECEIPT SCREEN ========== -->
+  <div class="screen" id="receiptScreen">
+    <div class="header">
+      <span class="back" onclick="navigateTo('salespersonDashboardScreen')">←</span>
+      <span class="title">Receipt</span>
+      <span class="icon-right" onclick="alert('Printing...')">🖨️</span>
+    </div>
+    <div class="scrolling">
+      <div class="card" style="text-align:center">
+        <div style="font-size:18px; font-weight:bold">PRIME CUT</div>
+        <div style="color:#757575; font-size:12px">Receipt #R-202404-0012</div>
+        <div style="font-size:12px; margin-top:8px">Date: 10/04/2026 | Cashier: James</div>
+        <div>Customer: John Doe</div>
+        <div class="divider"></div>
+        <table style="width:100%; text-align:left; font-size:13px">
+          <tr><td>Office Table (1)</td><td style="text-align:right">12,000</td></tr>
+          <tr><td>Bed 6x6 (1)</td><td style="text-align:right">25,000</td></tr>
+        </table>
+        <div class="divider"></div>
+        <div style="display:flex; justify-content:space-between"><span>Subtotal</span><span>37,000</span></div>
+        <div style="display:flex; justify-content:space-between; color:#4CAF50"><span>Discount (5%)</span><span>-1,850</span></div>
+        <div style="display:flex; justify-content:space-between; font-weight:bold"><span>Total</span><span>KES 35,150</span></div>
+        <div style="margin-top:12px">Payment: M-Pesa<br>Ref: <span id="receiptRef">QWERTY123</span></div>
+      </div>
+      <div style="text-align:center; margin-top:16px">
+        <button class="btn btn-outline btn-small" onclick="alert('Shared via WhatsApp')">Share Receipt</button>
       </div>
     </div>
+  </div>
 
-    <!-- Screen 4: Admin Dashboard (now shows the specific pending discount) -->
-    <div class="screen" id="screen4">
-      <div class="header"><span>Admin Dashboard</span></div>
+  <!-- ========== ADMIN DASHBOARD ========== -->
+  <div class="screen" id="adminDashboardScreen">
+    <div class="header"><span class="back" onclick="logout()">←</span><span class="title">Dashboard</span><span class="icon-right">🔔</span></div>
+    <div class="offline-banner" style="display:none">Offline Mode</div>
+    <div class="scrolling">
       <div class="kpi-row">
         <div class="kpi"><div class="value">KES 45K</div><div class="label">Today Sales</div></div>
         <div class="kpi"><div class="value">12</div><div class="label">Transactions</div></div>
         <div class="kpi"><div class="value">+8.5K</div><div class="label">Profit</div></div>
+      </div>
+      <div class="card">
+        <div style="font-weight:bold; margin-bottom:8px">📊 Sales (7 days)</div>
+        <div class="chart-placeholder">Interactive Chart</div>
       </div>
       <div class="card">
         <div style="font-weight:bold; margin-bottom:8px">⚠️ Low Stock</div>
@@ -110,51 +510,130 @@
       </div>
       <div class="card">
         <div style="font-weight:bold; margin-bottom:8px">📋 Pending Approvals</div>
-        <div class="list-item">
-          <span>🛋️ Sofa Set (15% off)<br><small style="color:#757575">Jane M. · KES 6,750</small></span>
-          <div style="display:flex; gap:8px;">
-            <span class="badge" style="background:#4CAF50; cursor:default;">Approve</span>
-            <span class="badge" style="background:#F44336; cursor:default;">Deny</span>
-          </div>
-        </div>
+        <div class="list-item">Discount 15% #S0015 <button class="btn btn-outline btn-small" onclick="alert('Approved')">Approve</button></div>
+        <div class="list-item">Expense: Delivery fuel <button class="btn btn-outline btn-small">Approve</button></div>
       </div>
     </div>
-
-    <!-- Screen 5: After Approval (Receipt showing approved 15% discount) -->
-    <div class="screen" id="screen5">
-      <div class="header"><span>Receipt</span></div>
-      <div class="card" style="text-align:center">
-        <div style="font-size:18px; font-weight:bold">PRIME CUT</div>
-        <div style="color:#757575; font-size:12px">Receipt #R-202404-0025</div>
-        <div style="margin-top:8px">Customer: Jane M.</div>
-        <div class="divider"></div>
-        <table style="width:100%; text-align:left; font-size:13px">
-          <tr><td>🛋️ Sofa Set (1)</td><td style="text-align:right">45,000</td></tr>
-        </table>
-        <div class="divider"></div>
-        <div style="display:flex; justify-content:space-between"><span>Subtotal</span><span>45,000</span></div>
-        <div style="display:flex; justify-content:space-between; color:#F44336"><span>Discount (15%)</span><span>-6,750</span></div>
-        <div style="font-weight:bold; display:flex; justify-content:space-between"><span>Total</span><span>KES 38,250</span></div>
-        <div style="margin-top:12px; font-size:13px;">Payment: M-Pesa · Ref: ABC123</div>
-        <div style="background:#F5F5F5; margin-top:12px; padding:8px; border-radius:6px; font-size:12px; color:#4CAF50;">✔ Discount approved by Admin</div>
-      </div>
+    <div class="tabs">
+      <div class="tab active" onclick="navigateTo('adminDashboardScreen')"><span class="icon">🏠</span>Home</div>
+      <div class="tab" onclick="navigateTo('salesReportScreen')"><span class="icon">🛒</span>Sales</div>
+      <div class="tab" onclick="navigateTo('stockListScreen')"><span class="icon">📦</span>Inventory</div>
+      <div class="tab" onclick="navigateTo('productionListScreen')"><span class="icon">🔨</span>Prod</div>
+      <div class="tab" onclick="navigateTo('financeDashboardScreen')"><span class="icon">💰</span>Finance</div>
+      <div class="tab" onclick="navigateTo('reportsMenuScreen')"><span class="icon">📊</span>Reports</div>
+      <div class="tab" onclick="navigateTo('userListScreen')"><span class="icon">👥</span>Users</div>
+      <div class="tab" onclick="navigateTo('settingsScreen')"><span class="icon">⚙️</span>Settings</div>
     </div>
+  </div>
 
-    <!-- Screen 6: Inventory -->
-    <div class="screen" id="screen6">
-      <div class="header"><span>Stock List</span></div>
+  <!-- ========== INVENTORY: STOCK LIST ========== -->
+  <div class="screen" id="stockListScreen">
+    <div class="header"><span class="back" onclick="navigateTo('adminDashboardScreen')">←</span><span class="title">Stock List</span><span class="icon-right">🔍</span></div>
+    <div class="scrolling">
+      <div style="padding:12px 16px"><span class="chip active">All</span><span class="chip">Furniture</span><span class="chip">Timber</span></div>
       <div class="card">
-        <div class="list-item"><span>🪑 Office Table</span><span>20 pcs</span></div>
-        <div class="list-item"><span>🛏️ Bed 6x6</span><span>8 pcs ⚠️</span></div>
-        <div class="list-item"><span>📐 Cypress 12ft</span><span>45 pcs</span></div>
+        <div class="list-item"><span>🪑 Office Table</span><span>20 pcs</span><button class="btn btn-outline btn-small" onclick="navigateTo('productDetailScreen')">View</button></div>
+        <div class="list-item"><span>🛏️ Bed 6x6</span><span>8 pcs ⚠️</span><button class="btn btn-outline btn-small">View</button></div>
+        <div class="list-item"><span>📐 Cypress 12ft</span><span>45 pcs</span><button class="btn btn-outline btn-small" onclick="navigateTo('timberBatchScreen')">Batch</button></div>
+      </div>
+      <div style="display:flex; gap:8px; margin:0 16px;">
+        <button class="btn btn-outline" style="flex:1" onclick="navigateTo('stockTakeScreen')">🔄 Stock Take</button>
+        <button class="btn btn-outline" style="flex:1" onclick="navigateTo('stockReceiveScreen')">📥 Receive Stock</button>
       </div>
     </div>
+  </div>
 
-    <!-- Screen 7: Finance Dashboard -->
-    <div class="screen" id="screen7">
-      <div class="header"><span>Financial Dashboard</span></div>
+  <!-- Timber Batch Detail -->
+  <div class="screen" id="timberBatchScreen">
+    <div class="header"><span class="back" onclick="navigateTo('stockListScreen')">←</span><span class="title">Batch B2024-001</span></div>
+    <div class="card">
+      <div><strong>Cypress 12ft</strong></div>
+      <div>Total: 100 pcs | Available: 45 pcs</div>
+      <div>Location: Bay A</div>
+      <button class="btn btn-outline btn-small">Issue to Workshop</button>
+    </div>
+  </div>
+
+  <!-- Product Detail -->
+  <div class="screen" id="productDetailScreen">
+    <div class="header"><span class="back" onclick="navigateTo('stockListScreen')">←</span><span class="title">Office Table</span></div>
+    <div class="card">
+      <div>SKU: FUR-TBL-001</div>
+      <div>Cost: KES 8,000 | Selling: KES 12,000</div>
+      <div>Stock: 20 | Min: 5</div>
+      <button class="btn btn-outline btn-small">Edit</button>
+    </div>
+  </div>
+
+  <!-- Stock Take -->
+  <div class="screen" id="stockTakeScreen">
+    <div class="header"><span class="back" onclick="navigateTo('stockListScreen')">←</span><span class="title">Stock Take #ST-003</span></div>
+    <div class="scrolling">
       <div class="card">
-        <div style="font-weight:bold; margin-bottom:8px">Profit & Loss (April)</div>
+        <div class="list-item"><span>Office Table</span><span>System: 20</span><input style="width:60px" value="20"></div>
+        <div class="list-item"><span>Bed 6x6</span><span>System: 8</span><input style="width:60px" value="8"></div>
+        <button class="btn btn-primary">Complete Stock Take</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stock Receive -->
+  <div class="screen" id="stockReceiveScreen">
+    <div class="header"><span class="back" onclick="navigateTo('stockListScreen')">←</span><span class="title">Receive Stock</span></div>
+    <div class="card">
+      <div class="input-group"><label>Product</label><select><option>Office Table</option><option>Bed 6x6</option></select></div>
+      <div class="input-group"><label>Quantity</label><input type="number" value="10"></div>
+      <button class="btn btn-primary">Receive</button>
+    </div>
+  </div>
+
+  <!-- ========== PRODUCTION ========== -->
+  <div class="screen" id="productionListScreen">
+    <div class="header"><span class="back" onclick="navigateTo('adminDashboardScreen')">←</span><span class="title">Production Jobs</span><span class="icon-right">➕</span></div>
+    <div class="scrolling">
+      <div style="padding:12px 16px"><span class="chip active">All</span><span class="chip">Pending</span><span class="chip">In Progress</span></div>
+      <div class="card">
+        <div class="list-item"><span>🔨 #PJ-091</span><span>10 Tables</span><button class="btn btn-outline btn-small" onclick="navigateTo('jobDetailScreen')">View</button></div>
+        <div class="list-item"><span>🪑 #PJ-089</span><span>5 Beds (Pending)</span><button class="btn btn-outline btn-small">Start</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="jobDetailScreen">
+    <div class="header"><span class="back" onclick="navigateTo('productionListScreen')">←</span><span class="title">Job #PJ-091</span></div>
+    <div class="card">
+      <div><strong>Produce:</strong> 10 Office Tables</div>
+      <div>Status: In Progress</div>
+      <div>Materials: Cypress 20pcs, Varnish 2L</div>
+      <button class="btn btn-outline" onclick="navigateTo('materialIssueScreen')">🧾 Issue Materials</button>
+      <button class="btn btn-outline" onclick="navigateTo('completeProductionScreen')">✅ Complete Production</button>
+    </div>
+  </div>
+
+  <div class="screen" id="materialIssueScreen">
+    <div class="header"><span class="back" onclick="navigateTo('jobDetailScreen')">←</span><span class="title">Issue Materials</span></div>
+    <div class="card">
+      <div class="list-item">Cypress 12ft (Req: 20) <input style="width:60px" value="20"></div>
+      <div class="list-item">Varnish (Req: 2L) <input style="width:60px" value="2"></div>
+      <button class="btn btn-primary">Confirm Issue</button>
+    </div>
+  </div>
+
+  <div class="screen" id="completeProductionScreen">
+    <div class="header"><span class="back" onclick="navigateTo('jobDetailScreen')">←</span><span class="title">Complete Production</span></div>
+    <div class="card">
+      <div class="input-group"><label>Quantity Produced</label><input type="number" value="10"></div>
+      <button class="btn btn-primary">Complete & Add to Stock</button>
+    </div>
+  </div>
+
+  <!-- ========== FINANCE ========== -->
+  <div class="screen" id="financeDashboardScreen">
+    <div class="header"><span class="back" onclick="navigateTo('adminDashboardScreen')">←</span><span class="title">Financial Dashboard</span></div>
+    <div class="scrolling">
+      <div style="padding:12px 16px"><span class="chip active">Month</span><span class="chip">Week</span><span class="chip">Year</span></div>
+      <div class="card">
+        <div style="font-weight:bold">Profit & Loss (April)</div>
         <div class="list-item"><span>Revenue</span><span>KES 450,000</span></div>
         <div class="list-item"><span>COGS</span><span>-200,000</span></div>
         <div class="list-item"><span>Gross Profit</span><span>250,000</span></div>
@@ -162,55 +641,284 @@
         <div class="list-item" style="font-weight:bold"><span>Net Profit</span><span>KES 130,000 (28.9%)</span></div>
       </div>
       <div class="card">
-        <div style="font-weight:bold; margin-bottom:8px">Cash Flow</div>
+        <div style="font-weight:bold">Cash Flow</div>
         <div>Opening: 50,000 | In: +450K | Out: -320K | Closing: 180K</div>
       </div>
-    </div>
-
-    <!-- Screen 8: Reports -->
-    <div class="screen" id="screen8">
-      <div class="header"><span>Reports</span></div>
-      <div class="card">
-        <div style="font-weight:bold; margin-bottom:12px">📊 Sales Report</div>
-        <div class="list-item"><span>Total Sales</span><span>KES 1,250,000</span></div>
-        <div class="list-item"><span>Profit</span><span>KES 380,000</span></div>
-        <div class="list-item"><span>Transactions</span><span>142</span></div>
-        <div class="list-item"><span>Avg. Sale</span><span>KES 8,803</span></div>
-      </div>
-      <div class="card">
-        <div style="font-weight:bold; margin-bottom:8px">Top Products</div>
-        <div class="list-item"><span>🪑 Office Table</span><span>KES 480K</span></div>
-        <div class="list-item"><span>🛏️ Bed 6x6</span><span>KES 350K</span></div>
-        <div class="list-item"><span>📐 Cypress 12ft</span><span>KES 200K</span></div>
+      <div style="display:flex; gap:8px; margin:0 16px;">
+        <button class="btn btn-outline" style="flex:1" onclick="navigateTo('expenditureListScreen')">Expenses</button>
+        <button class="btn btn-outline" style="flex:1" onclick="navigateTo('budgetsScreen')">Budgets</button>
+        <button class="btn btn-outline" style="flex:1" onclick="navigateTo('pettyCashScreen')">Petty Cash</button>
       </div>
     </div>
   </div>
 
-  <div class="nav-arrows">
-    <button class="nav-btn" onclick="prevScreen()">← Previous</button>
-    <span class="screen-counter" id="screenCounter">1 / 8</span>
-    <button class="nav-btn" onclick="nextScreen()">Next →</button>
+  <div class="screen" id="expenditureListScreen">
+    <div class="header"><span class="back" onclick="navigateTo('financeDashboardScreen')">←</span><span class="title">Expenditures</span><span class="icon-right" onclick="navigateTo('expenditureEntryScreen')">➕</span></div>
+    <div class="card">
+      <div class="list-item">Rent - KES 60,000 <span>Paid</span></div>
+      <div class="list-item">Electricity - KES 8,000 <span>Pending</span></div>
+      <div class="list-item">Security - KES 15,000 <span>Paid</span></div>
+    </div>
   </div>
+
+  <div class="screen" id="expenditureEntryScreen">
+    <div class="header"><span class="back" onclick="navigateTo('financeDashboardScreen')">←</span><span class="title">Record Expense</span></div>
+    <div class="card">
+      <div class="input-group"><label>Category</label><select><option>Rent</option><option>Electricity</option></select></div>
+      <div class="input-group"><label>Amount (KES)</label><input type="number" value="5000"></div>
+      <div class="input-group"><label>Payee</label><input value="Kenya Power"></div>
+      <button class="btn btn-primary">Save</button>
+    </div>
+  </div>
+
+  <div class="screen" id="budgetsScreen">
+    <div class="header"><span class="back" onclick="navigateTo('financeDashboardScreen')">←</span><span class="title">Budget April 2026</span></div>
+    <div class="card">
+      <div class="list-item">Rent 60,000/60,000 ▓▓▓▓▓▓▓▓▓▓</div>
+      <div class="list-item">Electricity 8,000/10,000 ▓▓▓▓▓▓░░</div>
+      <div class="list-item">Security 12,000/15,000 ▓▓▓▓▓▓▓░</div>
+    </div>
+  </div>
+
+  <div class="screen" id="pettyCashScreen">
+    <div class="header"><span class="back" onclick="navigateTo('financeDashboardScreen')">←</span><span class="title">Petty Cash</span></div>
+    <div class="card">
+      <div style="font-size:24px; font-weight:bold">Balance: KES 2,500</div>
+      <button class="btn btn-outline">+ Add Funds</button>
+      <button class="btn btn-outline">- Withdraw</button>
+    </div>
+  </div>
+
+  <!-- ========== REPORTS ========== -->
+  <div class="screen" id="reportsMenuScreen">
+    <div class="header"><span class="back" onclick="navigateTo('adminDashboardScreen')">←</span><span class="title">Reports</span></div>
+    <div class="card">
+      <button class="btn btn-outline" onclick="navigateTo('salesReportScreen')">📊 Sales Report</button>
+      <button class="btn btn-outline" onclick="navigateTo('profitLossReportScreen')">📈 Profit & Loss</button>
+      <button class="btn btn-outline" onclick="navigateTo('inventoryReportScreen')">📦 Inventory Report</button>
+      <button class="btn btn-outline" onclick="navigateTo('productionReportScreen')">🔨 Production Report</button>
+      <button class="btn btn-outline" onclick="navigateTo('expenseReportScreen')">💸 Expense Report</button>
+      <button class="btn btn-outline" onclick="navigateTo('auditTrailScreen')">📋 Audit Trail</button>
+    </div>
+  </div>
+
+  <div class="screen" id="salesReportScreen">
+    <div class="header"><span class="back" onclick="navigateTo('reportsMenuScreen')">←</span><span class="title">Sales Report</span><span class="icon-right">📥</span></div>
+    <div class="card">
+      <div><strong>Total Sales:</strong> KES 1,250,000</div>
+      <div><strong>Profit:</strong> KES 380,000</div>
+      <div class="chart-placeholder">Sales Trend</div>
+    </div>
+  </div>
+
+  <div class="screen" id="profitLossReportScreen">
+    <div class="header"><span class="back" onclick="navigateTo('reportsMenuScreen')">←</span><span class="title">Profit & Loss</span></div>
+    <div class="card">Same as finance P&L but with export buttons.</div>
+  </div>
+
+  <div class="screen" id="inventoryReportScreen">
+    <div class="header"><span class="back" onclick="navigateTo('reportsMenuScreen')">←</span><span class="title">Inventory Report</span></div>
+    <div class="card">
+      <div>Total items: 145</div>
+      <div>Low stock: 3</div>
+    </div>
+  </div>
+
+  <div class="screen" id="productionReportScreen">
+    <div class="header"><span class="back" onclick="navigateTo('reportsMenuScreen')">←</span><span class="title">Production Report</span></div>
+    <div class="card">
+      <div>Completed jobs: 9</div>
+      <div>Efficiency: 87%</div>
+    </div>
+  </div>
+
+  <div class="screen" id="expenseReportScreen">
+    <div class="header"><span class="back" onclick="navigateTo('reportsMenuScreen')">←</span><span class="title">Expense Report</span></div>
+    <div class="card">Same as expenditure list plus charts.</div>
+  </div>
+
+  <div class="screen" id="auditTrailScreen">
+    <div class="header"><span class="back" onclick="navigateTo('reportsMenuScreen')">←</span><span class="title">Audit Trail</span></div>
+    <div class="card">
+      <div class="list-item">10/04 08:23 LOGIN James</div>
+      <div class="list-item">10/04 08:45 SALE_CREATED #S0012</div>
+      <div class="list-item">10/04 09:01 STOCK_RECEIVED Mary</div>
+    </div>
+  </div>
+
+  <!-- ========== USER MANAGEMENT ========== -->
+  <div class="screen" id="userListScreen">
+    <div class="header"><span class="back" onclick="navigateTo('adminDashboardScreen')">←</span><span class="title">Users</span><span class="icon-right" onclick="navigateTo('addUserScreen')">➕</span></div>
+    <div class="card">
+      <div class="list-item">James O. (Salesperson) <button class="btn btn-outline btn-small" onclick="navigateTo('userDetailScreen')">Edit</button></div>
+      <div class="list-item">Mary W. (Manager) <button class="btn btn-outline btn-small">Edit</button></div>
+      <div class="list-item">Admin (Admin) <button class="btn btn-outline btn-small">Edit</button></div>
+    </div>
+  </div>
+
+  <div class="screen" id="addUserScreen">
+    <div class="header"><span class="back" onclick="navigateTo('userListScreen')">←</span><span class="title">Add User</span></div>
+    <div class="card">
+      <div class="input-group"><label>Name</label><input></div>
+      <div class="input-group"><label>Role</label><select><option>Salesperson</option><option>Manager</option></select></div>
+      <button class="btn btn-primary">Create</button>
+    </div>
+  </div>
+
+  <div class="screen" id="userDetailScreen">
+    <div class="header"><span class="back" onclick="navigateTo('userListScreen')">←</span><span class="title">Edit James O.</span></div>
+    <div class="card">
+      <div class="input-group"><label>Role</label><select><option>Salesperson</option></select></div>
+      <div class="input-group"><label>Max Discount</label><input value="5%"></div>
+      <button class="btn btn-primary">Save</button>
+    </div>
+  </div>
+
+  <!-- ========== SETTINGS ========== -->
+  <div class="screen" id="settingsScreen">
+    <div class="header"><span class="back" onclick="navigateTo('adminDashboardScreen')">←</span><span class="title">Settings</span></div>
+    <div class="card">
+      <button class="btn btn-outline" onclick="navigateTo('rolesScreen')">🔑 Role Permissions</button>
+      <button class="btn btn-outline" onclick="alert('Backup started')">💾 Database Backup</button>
+      <button class="btn btn-outline" onclick="navigateTo('systemSettingsScreen')">⚙️ System Config</button>
+    </div>
+  </div>
+
+  <div class="screen" id="rolesScreen">
+    <div class="header"><span class="back" onclick="navigateTo('settingsScreen')">←</span><span class="title">Role Permissions</span></div>
+    <div class="card">
+      <div class="list-item">Salesperson: View sales only <button class="btn btn-outline btn-small">Edit</button></div>
+      <div class="list-item">Manager: Full inventory & production<button class="btn btn-outline btn-small">Edit</button></div>
+    </div>
+  </div>
+
+  <div class="screen" id="systemSettingsScreen">
+    <div class="header"><span class="back" onclick="navigateTo('settingsScreen')">←</span><span class="title">System Settings</span></div>
+    <div class="card">
+      <div class="input-group"><label>Tax Rate (%)</label><input value="16"></div>
+      <div class="input-group"><label>Low Stock Threshold</label><input value="10"></div>
+      <button class="btn btn-primary">Save</button>
+    </div>
+  </div>
+
 </div>
 
 <script>
-  let currentScreen = 1;
-  const totalScreens = 8;
+  // ========== NAVIGATION & ROLE LOGIC ==========
+  let currentRole = 'salesperson';
 
-  function showScreen(num) {
+  function navigateTo(screenId) {
     document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-    document.getElementById('screen' + num).classList.add('active');
-    document.getElementById('screenCounter').innerText = num + ' / ' + totalScreens;
+    const target = document.getElementById(screenId);
+    if (target) {
+      target.classList.add('active');
+    }
+    // Update tab active states based on the screen shown
+    updateActiveTabs(screenId);
   }
 
-  function nextScreen() {
-    if (currentScreen < totalScreens) { currentScreen++; showScreen(currentScreen); }
-  }
-  function prevScreen() {
-    if (currentScreen > 1) { currentScreen--; showScreen(currentScreen); }
+  function updateActiveTabs(activeScreenId) {
+    // Salesperson tabs
+    const salesTabsContainer = document.querySelector('#salespersonDashboardScreen .tabs');
+    if (salesTabsContainer) {
+      const tabs = salesTabsContainer.querySelectorAll('.tab');
+      tabs.forEach(t => t.classList.remove('active'));
+      if (activeScreenId === 'salespersonDashboardScreen') {
+        tabs[0]?.classList.add('active');
+      } else if (activeScreenId === 'newSaleScreen') {
+        tabs[1]?.classList.add('active');
+      }
+      // profile tab handled by logout
+    }
+
+    // Admin tabs
+    const adminTabsContainer = document.querySelector('#adminDashboardScreen .tabs');
+    if (adminTabsContainer) {
+      const tabs = adminTabsContainer.querySelectorAll('.tab');
+      tabs.forEach(t => t.classList.remove('active'));
+      const tabIndexMap = {
+        'adminDashboardScreen': 0,
+        'salesReportScreen': 1,
+        'stockListScreen': 2,
+        'productionListScreen': 3,
+        'financeDashboardScreen': 4,
+        'reportsMenuScreen': 5,
+        'userListScreen': 6,
+        'settingsScreen': 7
+      };
+      const idx = tabIndexMap[activeScreenId];
+      if (idx !== undefined && tabs[idx]) {
+        tabs[idx].classList.add('active');
+      }
+    }
   }
 
-  showScreen(1);
+  function selectRole(role, element) {
+    currentRole = role;
+    document.querySelectorAll('.role-card').forEach(card => card.classList.remove('selected'));
+    element.classList.add('selected');
+  }
+
+  function login() {
+    if (currentRole === 'salesperson') {
+      navigateTo('salespersonDashboardScreen');
+    } else {
+      navigateTo('adminDashboardScreen');
+    }
+  }
+
+  function logout() {
+    navigateTo('loginScreen');
+  }
+
+  // Salesperson tab switching (for the old tab buttons)
+  function switchSalespersonTab(tab) {
+    if (tab === 'dashboard') {
+      navigateTo('salespersonDashboardScreen');
+    } else if (tab === 'sales') {
+      navigateTo('newSaleScreen');
+    }
+  }
+
+  // ========== CART LOGIC ==========
+  function updateQty(btn, delta, price) {
+    const qtySpan = btn.parentElement.querySelector('.qty');
+    let qty = parseInt(qtySpan.innerText) + delta;
+    if (qty < 1) qty = 1;
+    qtySpan.innerText = qty;
+    const lineTotal = btn.parentElement.nextElementSibling; // span.line-total
+    lineTotal.innerText = (qty * price).toLocaleString();
+    updateTotals();
+  }
+
+  function addItem() {
+    alert('Product search would open here');
+  }
+
+  function updateTotals() {
+    const cartItems = document.querySelectorAll('#newSaleScreen .cart-item');
+    let subtotal = 0;
+    cartItems.forEach(item => {
+      const qtySpan = item.querySelector('.qty');
+      const lineTotalSpan = item.querySelector('.line-total');
+      if (qtySpan && lineTotalSpan) {
+        subtotal += parseInt(lineTotalSpan.innerText.replace(/,/g, ''));
+      }
+    });
+    document.getElementById('subtotal').innerText = `KES ${subtotal.toLocaleString()}`;
+    const discount = Math.round(subtotal * 0.05);
+    document.getElementById('discountValue').innerText = `-KES ${discount.toLocaleString()}`;
+    document.getElementById('total').innerText = `KES ${(subtotal - discount).toLocaleString()}`;
+  }
+
+  function completeSale() {
+    const ref = document.getElementById('mpesaRef').value;
+    document.getElementById('receiptRef').innerText = ref || 'QWERTY123';
+    navigateTo('receiptScreen');
+  }
+
+  // Initial selection
+  document.getElementById('roleSalesperson').classList.add('selected');
 </script>
 </body>
 </html>
