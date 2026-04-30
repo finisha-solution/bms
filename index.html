@@ -179,12 +179,27 @@
       border: 1.5px solid #1976D2;
     }
 
+    .btn-danger {
+      background: white;
+      color: #F44336;
+      border: 1.5px solid #F44336;
+    }
+
     .btn-small {
       width: auto;
       display: inline-block;
       padding: 8px 16px;
       font-size: 13px;
       margin: 4px;
+    }
+
+    .btn-tiny {
+      width: auto;
+      display: inline-block;
+      padding: 6px 10px;
+      font-size: 11px;
+      margin: 2px;
+      border-radius: 6px;
     }
 
     .input-group {
@@ -312,6 +327,64 @@
     .scrolling {
       padding-bottom: 20px;
     }
+
+    .toggle-row {
+      display: flex;
+      background: #E0E0E0;
+      border-radius: 8px;
+      padding: 3px;
+      margin-bottom: 12px;
+    }
+
+    .toggle-option {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      color: #757575;
+      font-weight: 500;
+    }
+
+    .toggle-option.active {
+      background: white;
+      color: #1976D2;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+
+    .modal-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal-box {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      width: 85%;
+      text-align: center;
+    }
+
+    .modal-box h3 {
+      margin-bottom: 12px;
+      color: #212121;
+    }
+
+    .modal-box p {
+      font-size: 14px;
+      color: #757575;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
@@ -319,6 +392,18 @@
   <div class="status-bar">
     <span>0:00</span>
     <span>📶 🔋 100%</span>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal-box">
+      <h3>Delete User?</h3>
+      <p id="deleteUserName">Are you sure you want to remove this user?</p>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-outline" style="flex:1" onclick="closeDeleteModal()">Cancel</button>
+        <button class="btn btn-danger" style="flex:1; background:#F44336; color:white; border:none;" onclick="confirmDelete()">Delete</button>
+      </div>
+    </div>
   </div>
 
   <!-- ========== LOGIN SCREEN ========== -->
@@ -436,8 +521,8 @@
         <div class="divider"></div>
         <div style="display:flex; justify-content:space-between"><span>Subtotal</span><span id="subtotal">KES 37,000</span></div>
         <div style="display:flex; justify-content:space-between; margin-top:8px">
-          <span>Discount (5%)</span>
-          <span id="discountValue" style="color:#4CAF50">-KES 1,850</span>
+          <span>Discount applied</span>
+          <span id="discountValue" style="color:#F44336">-KES 1,850</span>
         </div>
         <div style="display:flex; justify-content:space-between; font-weight:bold; margin-top:8px">
           <span>Total</span><span id="total">KES 35,150</span>
@@ -480,7 +565,7 @@
         </table>
         <div class="divider"></div>
         <div style="display:flex; justify-content:space-between"><span>Subtotal</span><span>37,000</span></div>
-        <div style="display:flex; justify-content:space-between; color:#4CAF50"><span>Discount (5%)</span><span>-1,850</span></div>
+        <div style="display:flex; justify-content:space-between; color:#F44336"><span>Discount</span><span>-KES 1,850</span></div>
         <div style="display:flex; justify-content:space-between; font-weight:bold"><span>Total</span><span>KES 35,150</span></div>
         <div style="margin-top:12px">Payment: M-Pesa<br>Ref: <span id="receiptRef">QWERTY123</span></div>
       </div>
@@ -577,13 +662,37 @@
     </div>
   </div>
 
-  <!-- Stock Receive -->
+  <!-- Stock Receive (with Existing / New toggle) -->
   <div class="screen" id="stockReceiveScreen">
     <div class="header"><span class="back" onclick="navigateTo('stockListScreen')">←</span><span class="title">Receive Stock</span></div>
-    <div class="card">
-      <div class="input-group"><label>Product</label><select><option>Office Table</option><option>Bed 6x6</option></select></div>
-      <div class="input-group"><label>Quantity</label><input type="number" value="10"></div>
-      <button class="btn btn-primary">Receive</button>
+    <div class="scrolling">
+      <div class="card">
+        <div class="toggle-row" id="receiveToggle">
+          <div class="toggle-option active" onclick="switchReceiveMode('existing')">Existing Product</div>
+          <div class="toggle-option" onclick="switchReceiveMode('new')">New Product</div>
+        </div>
+
+        <!-- Existing Product Mode -->
+        <div id="receiveExisting">
+          <div class="input-group"><label>Select Product</label><select><option>Office Table</option><option>Bed 6x6</option><option>Cypress 12ft</option></select></div>
+          <div class="input-group"><label>Quantity to Add</label><input type="number" value="10"></div>
+          <button class="btn btn-primary">Receive Stock</button>
+        </div>
+
+        <!-- New Product Mode (hidden by default) -->
+        <div id="receiveNew" style="display:none;">
+          <div class="input-group"><label>Product Name *</label><input type="text" placeholder="e.g. Dining Table"></div>
+          <div class="input-group"><label>SKU / Code</label><input type="text" placeholder="e.g. FUR-DIN-003"></div>
+          <div class="input-group"><label>Category</label><select><option>Furniture</option><option>Timber</option><option>Hardware</option><option>Finishing</option></select></div>
+          <div style="display:flex; gap:8px;">
+            <div class="input-group" style="flex:1"><label>Cost Price (KES)</label><input type="number" placeholder="8,000"></div>
+            <div class="input-group" style="flex:1"><label>Selling Price (KES)</label><input type="number" placeholder="15,000"></div>
+          </div>
+          <div class="input-group"><label>Initial Stock Qty</label><input type="number" value="5"></div>
+          <div class="input-group"><label>Low Stock Alert At</label><input type="number" value="3"></div>
+          <button class="btn btn-primary" onclick="alert('New product added to stock!')">Add to Stock</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -746,13 +855,31 @@
     </div>
   </div>
 
-  <!-- ========== USER MANAGEMENT ========== -->
+  <!-- ========== USER MANAGEMENT (with Delete) ========== -->
   <div class="screen" id="userListScreen">
     <div class="header"><span class="back" onclick="navigateTo('adminDashboardScreen')">←</span><span class="title">Users</span><span class="icon-right" onclick="navigateTo('addUserScreen')">➕</span></div>
     <div class="card">
-      <div class="list-item">James O. (Salesperson) <button class="btn btn-outline btn-small" onclick="navigateTo('userDetailScreen')">Edit</button></div>
-      <div class="list-item">Mary W. (Manager) <button class="btn btn-outline btn-small">Edit</button></div>
-      <div class="list-item">Admin (Admin) <button class="btn btn-outline btn-small">Edit</button></div>
+      <div class="list-item">
+        <span>James O. <small style="color:#757575">Salesperson</small></span>
+        <span>
+          <button class="btn btn-outline btn-tiny" onclick="navigateTo('userDetailScreen')">Edit</button>
+          <button class="btn btn-danger btn-tiny" onclick="openDeleteModal('James O.')">Delete</button>
+        </span>
+      </div>
+      <div class="list-item">
+        <span>Mary W. <small style="color:#757575">Manager</small></span>
+        <span>
+          <button class="btn btn-outline btn-tiny">Edit</button>
+          <button class="btn btn-danger btn-tiny" onclick="openDeleteModal('Mary W.')">Delete</button>
+        </span>
+      </div>
+      <div class="list-item">
+        <span>Admin <small style="color:#757575">Admin</small></span>
+        <span>
+          <button class="btn btn-outline btn-tiny">Edit</button>
+          <button class="btn btn-danger btn-tiny" onclick="openDeleteModal('Admin')" disabled style="opacity:0.4; cursor:not-allowed;">Delete</button>
+        </span>
+      </div>
     </div>
   </div>
 
@@ -813,12 +940,10 @@
     if (target) {
       target.classList.add('active');
     }
-    // Update tab active states based on the screen shown
     updateActiveTabs(screenId);
   }
 
   function updateActiveTabs(activeScreenId) {
-    // Salesperson tabs
     const salesTabsContainer = document.querySelector('#salespersonDashboardScreen .tabs');
     if (salesTabsContainer) {
       const tabs = salesTabsContainer.querySelectorAll('.tab');
@@ -828,10 +953,8 @@
       } else if (activeScreenId === 'newSaleScreen') {
         tabs[1]?.classList.add('active');
       }
-      // profile tab handled by logout
     }
 
-    // Admin tabs
     const adminTabsContainer = document.querySelector('#adminDashboardScreen .tabs');
     if (adminTabsContainer) {
       const tabs = adminTabsContainer.querySelectorAll('.tab');
@@ -871,12 +994,46 @@
     navigateTo('loginScreen');
   }
 
-  // Salesperson tab switching (for the old tab buttons)
   function switchSalespersonTab(tab) {
     if (tab === 'dashboard') {
       navigateTo('salespersonDashboardScreen');
     } else if (tab === 'sales') {
       navigateTo('newSaleScreen');
+    }
+  }
+
+  // ========== DELETE USER MODAL ==========
+  let userToDelete = '';
+
+  function openDeleteModal(userName) {
+    userToDelete = userName;
+    document.getElementById('deleteUserName').innerText = 'Are you sure you want to remove ' + userName + '?';
+    document.getElementById('deleteModal').classList.add('show');
+  }
+
+  function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('show');
+    userToDelete = '';
+  }
+
+  function confirmDelete() {
+    alert(userToDelete + ' has been deleted.');
+    closeDeleteModal();
+  }
+
+  // ========== STOCK RECEIVE TOGGLE ==========
+  function switchReceiveMode(mode) {
+    const toggleOptions = document.querySelectorAll('#receiveToggle .toggle-option');
+    toggleOptions.forEach(opt => opt.classList.remove('active'));
+
+    if (mode === 'existing') {
+      toggleOptions[0].classList.add('active');
+      document.getElementById('receiveExisting').style.display = 'block';
+      document.getElementById('receiveNew').style.display = 'none';
+    } else {
+      toggleOptions[1].classList.add('active');
+      document.getElementById('receiveExisting').style.display = 'none';
+      document.getElementById('receiveNew').style.display = 'block';
     }
   }
 
@@ -886,7 +1043,7 @@
     let qty = parseInt(qtySpan.innerText) + delta;
     if (qty < 1) qty = 1;
     qtySpan.innerText = qty;
-    const lineTotal = btn.parentElement.nextElementSibling; // span.line-total
+    const lineTotal = btn.parentElement.nextElementSibling;
     lineTotal.innerText = (qty * price).toLocaleString();
     updateTotals();
   }
